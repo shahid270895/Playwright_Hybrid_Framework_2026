@@ -1,0 +1,8 @@
+{
+    "environment": "PROD",
+    "baseURL": "https://www.saucedemo.com/",
+    "username": "standard_user",
+    "password": "secret_sauce",
+    "timeout": 30000,
+    "headless": true
+}
