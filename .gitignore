@@ -1,12 +1,25 @@
 
 # Playwright
 node_modules/
+
 playwright-report/
+
 test-results/
-allure-results/
-allure-report/
-logs/
+
+reports/
+
 screenshots/
+
+logs/
+
 videos/
+
 traces/
+
+allure-results/
+
+allure-report/
+
 .env
+
+.vscode/settings.json
