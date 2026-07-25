@@ -1,0 +1,8 @@
+{
+  "environment": "PROD",
+  "baseURL": "https://www.saucedemo.com/",
+  "timeout": 30000,
+  "headless": false,
+  "retries": 1,
+  "workers": 2
+}
