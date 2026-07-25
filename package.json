@@ -6,8 +6,16 @@
   "scripts": {
     "test": "playwright test",
     "test:qa": "cross-env TEST_ENV=qa playwright test",
+    "test:stage": "cross-env TEST_ENV=stage playwright test",
     "test:uat": "cross-env TEST_ENV=uat playwright test",
-    "test:prod": "cross-env TEST_ENV=prod playwright test"
+    "test:prod": "cross-env TEST_ENV=prod playwright test",
+    "test:qa:chrome": "cross-env TEST_ENV=qa playwright test --project=chromium",
+    "test:qa:firefox": "cross-env TEST_ENV=qa playwright test --project=firefox",
+    "test:qa:webkit": "cross-env TEST_ENV=qa playwright test --project=webkit",
+    "test:qa:stage": "cross-env TEST_ENV=stage playwright test --project=chromium",
+    "test:uat:chrome": "cross-env TEST_ENV=uat playwright test --project=chromium",
+    "test:prod:chrome": "cross-env TEST_ENV=prod playwright test --project=chromium",
+    "report": "playwright show-report"
   },
   "keywords": [],
   "author": "",
@@ -17,5 +25,8 @@
     "@playwright/test": "^1.61.1",
     "@types/node": "^26.1.1",
     "cross-env": "^10.1.0"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2"
   }
 }
