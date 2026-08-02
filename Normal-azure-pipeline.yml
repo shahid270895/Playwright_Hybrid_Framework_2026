@@ -14,8 +14,10 @@ pool:
   vmImage: windows-latest
 
 variables:
+  - group: Playwright-QA
 
-  NodeVersion: '24.x'
+  - name: NodeVersion
+    value: '24.x'
 
 steps:
 
