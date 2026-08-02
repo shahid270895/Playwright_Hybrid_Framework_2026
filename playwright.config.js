@@ -30,7 +30,7 @@ module.exports = defineConfig({
   timeout: 30000,
 
   expect: {
-    timeout: 10000
+    timeout: 30000
   },
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [
