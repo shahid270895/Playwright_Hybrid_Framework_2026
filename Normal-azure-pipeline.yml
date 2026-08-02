@@ -1,0 +1,112 @@
+# ==========================================
+# Playwright CI Build Pipeline
+# Author : Shahid Aftab
+# Purpose: Continuous Integration Build
+# ==========================================
+
+trigger:
+- main
+
+pr:
+- main
+
+pool:
+  vmImage: windows-latest
+
+variables:
+
+  NodeVersion: '24.x'
+
+steps:
+
+# ==========================================
+# Checkout Source Code
+# ==========================================
+
+- checkout: self
+  clean: true
+
+# ==========================================
+# Install Node.js
+# ==========================================
+
+- task: NodeTool@0
+  displayName: 'Install Node.js'
+
+  inputs:
+    versionSpec: $(NodeVersion)
+
+# ==========================================
+# Verify Node & NPM Version
+# ==========================================
+
+- script: |
+    node --version
+    npm --version
+  displayName: 'Verify Node Version'
+
+# ==========================================
+# Install Dependencies
+# ==========================================
+
+- script: |
+    npm ci
+  displayName: 'Install NPM Packages'
+
+# ==========================================
+# Install Playwright Browsers
+# ==========================================
+
+- script: |
+    npx playwright install --with-deps
+  displayName: 'Install Playwright Browsers'
+
+# ==========================================
+# Execute Playwright Tests
+# ==========================================
+
+- script: |
+    npm test
+  displayName: 'Execute Playwright Tests'
+
+# ==========================================
+# Publish JUnit Results
+# ==========================================
+
+- task: PublishTestResults@2
+  displayName: 'Publish JUnit Results'
+
+  condition: always()
+
+  inputs:
+    testResultsFormat: JUnit
+    testResultsFiles: 'artifacts/junit/*.xml'
+    mergeTestResults: true
+    failTaskOnFailedTests: true
+    testRunTitle: 'Playwright CI Build'
+
+# ==========================================
+# Publish Reports
+# ==========================================
+
+- task: PublishPipelineArtifact@1
+  displayName: 'Publish Reports'
+
+  condition: always()
+
+  inputs:
+    targetPath: '$(Build.SourcesDirectory)/reports'
+    artifact: Reports
+
+# ==========================================
+# Publish Artifacts
+# ==========================================
+
+- task: PublishPipelineArtifact@1
+  displayName: 'Publish Framework Artifacts'
+
+  condition: always()
+
+  inputs:
+    targetPath: '$(Build.SourcesDirectory)/artifacts'
+    artifact: Framework-Artifacts
