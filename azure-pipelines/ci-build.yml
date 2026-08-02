@@ -1,0 +1,84 @@
+# ==========================================
+# Playwright Basic CI Pipeline
+# Author : Shahid Aftab
+# Purpose: Execute a single Playwright test
+# ==========================================
+
+trigger:
+- main
+
+pr:
+- main
+
+pool:
+  name: 'AutomationPool-20-07-26'
+
+steps:
+
+# ==========================================
+# Checkout Source
+# ==========================================
+
+- checkout: self
+  clean: true
+
+# ==========================================
+# Install Node.js
+# ==========================================
+
+- task: UseNode@1
+  displayName: Install Node.js
+
+  inputs:
+    version: '24'
+
+# ==========================================
+# Verify Node Installation
+# ==========================================
+
+- script: |
+    node --version
+    npm --version
+  displayName: Verify Node & NPM
+
+# ==========================================
+# Install Dependencies
+# ==========================================
+
+- script: |
+    npm ci
+  displayName: Install NPM Packages
+
+# ==========================================
+# Install Browsers
+# ==========================================
+
+- script: |
+    npx playwright install chromium
+  displayName: Install Chromium
+
+# ==========================================
+# Execute One Test
+# ==========================================
+
+- script: |
+    npx playwright test tests/Login.spec.js --project=chromium --workers=1
+  displayName: Execute Login Test
+
+  env:
+    USERNAME: $(USERNAME)
+    PASSWORD: $(PASSWORD)
+
+# ==========================================
+# Publish JUnit Results
+# ==========================================
+
+- task: PublishTestResults@2
+  displayName: Publish JUnit Results
+
+  condition: always()
+
+  inputs:
+    testResultsFormat: JUnit
+    testResultsFiles: artifacts/junit/*.xml
+    mergeTestResults: true
