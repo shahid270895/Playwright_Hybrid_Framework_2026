@@ -1,7 +1,7 @@
 # ==========================================
 # Playwright CI Build Pipeline
-# Author : Shahid Aftab
-# Purpose: Continuous Integration Build
+# Author  : Shahid Aftab
+# Purpose : Continuous Integration Build (QA - Chrome)
 # ==========================================
 
 trigger:
@@ -14,7 +14,7 @@ pool:
   vmImage: windows-latest
 
 variables:
-  NodeVersion: '24.x'
+  NodeVersion: '24'
 
 steps:
 
@@ -42,7 +42,20 @@ steps:
 - script: |
     node --version
     npm --version
-  displayName: 'Verify Node Version'
+  displayName: 'Verify Node & NPM Version'
+
+# ==========================================
+# Restore NPM Cache
+# ==========================================
+
+- task: Cache@2
+  displayName: 'Restore NPM Cache'
+
+  inputs:
+    key: 'npm | "$(Agent.OS)" | package-lock.json'
+    restoreKeys: |
+      npm | "$(Agent.OS)"
+    path: $(Pipeline.Workspace)/.npm
 
 # ==========================================
 # Install Dependencies
@@ -50,18 +63,7 @@ steps:
 
 - script: |
     npm ci --cache $(Pipeline.Workspace)/.npm
-  displayName: Install NPM Packages
-
-#===========================================
-
-- task: Cache@2
-  displayName: Cache NPM Packages
-
-  inputs:
-    key: 'npm | "$(Agent.OS)" | package-lock.json'
-    restoreKeys: |
-      npm | "$(Agent.OS)"
-    path: $(Pipeline.Workspace)/.npm
+  displayName: 'Install NPM Packages'
 
 # ==========================================
 # Install Playwright Browsers
@@ -76,12 +78,12 @@ steps:
 # ==========================================
 
 - script: |
-    npm test
-  displayName: Execute Playwright Tests
+    npm run test:qa:chrome
+  displayName: 'Execute QA Chrome Tests'
+
   env:
     USERNAME: $(QA_USERNAME)
     PASSWORD: $(QA_PASSWORD)
-    TEST_ENV: qa
 
 # ==========================================
 # Publish JUnit Results
@@ -100,11 +102,11 @@ steps:
     testRunTitle: 'Playwright CI Build'
 
 # ==========================================
-# Publish Reports
+# Publish HTML Reports
 # ==========================================
 
 - task: PublishPipelineArtifact@1
-  displayName: 'Publish Reports'
+  displayName: 'Publish HTML Reports'
 
   condition: always()
 
@@ -113,7 +115,7 @@ steps:
     artifact: Reports
 
 # ==========================================
-# Publish Artifacts
+# Publish Framework Artifacts
 # ==========================================
 
 - task: PublishPipelineArtifact@1
