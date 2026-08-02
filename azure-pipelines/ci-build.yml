@@ -11,7 +11,7 @@ pr:
 - main
 
 pool:
-  vmImage: windows-latest
+  name: 'AutomationPool-20-07-26'
 
 variables:
   NodeVersion: '24'

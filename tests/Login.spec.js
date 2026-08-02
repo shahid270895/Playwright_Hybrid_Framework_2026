@@ -28,11 +28,6 @@ test("User should login successfully with valid credentials", async ({ pages }) 
     // Perform login
     await pages.loginPage.login(config.username, config.password);
 
-    //Temp code:
-    console.log("URL:", pages.homePage.page.url());
-
-    console.log("Title:", await pages.homePage.page.title());
-
     // Verification
     await pages.homePage.verifyHomePagePageURL(/account/);
     console.log(await pages.homePage.getMyAccountText());
