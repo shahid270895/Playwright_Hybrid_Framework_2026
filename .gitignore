@@ -1,12 +1,42 @@
-
-# Playwright
+# ==========================
+# Node Modules
+# ==========================
 node_modules/
+
+# ==========================
+# Environment Files
+# ==========================
+.env
+.env.*
+
+# ==========================
+# VS Code
+# ==========================
+.vscode/
+
+# ==========================
+# Playwright Generated
+# ==========================
 playwright-report/
 test-results/
-allure-results/
-allure-report/
-logs/
-screenshots/
-videos/
-traces/
-.env
+
+# ==========================
+# Framework Reports
+# ==========================
+reports/
+
+# ==========================
+# Framework Artifacts
+# ==========================
+artifacts/
+
+# ==========================
+# Logs
+# ==========================
+*.log
+
+# ==========================
+# OS Files
+# ==========================
+.DS_Store
+Thumbs.db

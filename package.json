@@ -3,13 +3,37 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "test": "playwright test",
+    "test:qa": "cross-env TEST_ENV=qa playwright test",
+    "test:stage": "cross-env TEST_ENV=stage playwright test",
+    "test:uat": "cross-env TEST_ENV=uat playwright test",
+    "test:prod": "cross-env TEST_ENV=prod playwright test",
+    "test:qa:chrome": "cross-env TEST_ENV=qa playwright test --project=chromium",
+    "test:qa:firefox": "cross-env TEST_ENV=qa playwright test --project=firefox",
+    "test:qa:webkit": "cross-env TEST_ENV=qa playwright test --project=webkit",
+    "test:qa:stage": "cross-env TEST_ENV=stage playwright test --project=chromium",
+    "test:uat:chrome": "cross-env TEST_ENV=uat playwright test --project=chromium",
+    "test:prod:chrome": "cross-env TEST_ENV=prod playwright test --project=chromium",
+    "report": "playwright show-report",
+    "allure:generate": "allure generate artifacts/allure-results --clean -o reports/allure-report",
+    "allure:open": "allure open reports/allure-report",
+    "allure": "npm run allure:generate && npm run allure:open",
+    "allure:serve": "allure serve artifacts/allure-results"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
     "@playwright/test": "^1.61.1",
-    "@types/node": "^26.1.1"
+    "@types/node": "^26.1.1",
+    "allure-commandline": "^2.43.0",
+    "allure-js-commons": "^3.10.2",
+    "allure-playwright": "^3.10.2",
+    "cross-env": "^10.1.0"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2"
   }
 }

@@ -1,0 +1,8 @@
+{
+  "environment": "QA",
+  "baseURL": "https://automationteststore.com/index.php?rt=account/login",
+  "timeout": 30000,
+  "headless": false,
+  "retries": 1,
+  "workers": 2
+}
