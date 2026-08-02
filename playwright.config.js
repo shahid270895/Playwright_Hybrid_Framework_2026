@@ -1,6 +1,8 @@
 // @ts-check
 const { defineConfig, devices } = require('@playwright/test');
 const {config}=require('./config');
+const DateTimeHelper = require("./utils/common/DateTimeHelper");
+const executionTime = DateTimeHelper.getExecutionTimestamp();
 /**
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
@@ -23,11 +25,30 @@ module.exports = defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : config.workers,
 
+  outputDir: 'artifacts/test-results',
+
   timeout: 30000,
+
+  expect: {
+    timeout: 10000
+  },
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [
-        ['html']
-    ],
+      ['list'],
+
+      ['html', {
+          open: 'never',
+          outputFolder: `reports/html-report_${executionTime}`
+      }],
+
+      ['junit', {
+          outputFile: `artifacts/junit/results_${executionTime}.xml`
+      }],
+
+      ['allure-playwright', {
+          resultsDir: 'artifacts/allure-results'
+      }]
+  ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('')`. */
