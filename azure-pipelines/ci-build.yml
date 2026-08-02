@@ -14,10 +14,7 @@ pool:
   vmImage: windows-latest
 
 variables:
-  - group: Playwright-QA
-
-  - name: NodeVersion
-    value: '24.x'
+  NodeVersion: '24.x'
 
 steps:
 
@@ -32,11 +29,11 @@ steps:
 # Install Node.js
 # ==========================================
 
-- task: NodeTool@0
+- task: UseNode@1
   displayName: 'Install Node.js'
 
   inputs:
-    versionSpec: $(NodeVersion)
+    version: $(NodeVersion)
 
 # ==========================================
 # Verify Node & NPM Version
@@ -52,8 +49,19 @@ steps:
 # ==========================================
 
 - script: |
-    npm ci
-  displayName: 'Install NPM Packages'
+    npm ci --cache $(Pipeline.Workspace)/.npm
+  displayName: Install NPM Packages
+
+#===========================================
+
+- task: Cache@2
+  displayName: Cache NPM Packages
+
+  inputs:
+    key: 'npm | "$(Agent.OS)" | package-lock.json'
+    restoreKeys: |
+      npm | "$(Agent.OS)"
+    path: $(Pipeline.Workspace)/.npm
 
 # ==========================================
 # Install Playwright Browsers
@@ -66,24 +74,6 @@ steps:
 # ==========================================
 # Execute Playwright Tests
 # ==========================================
-
-- powershell: |
-    Write-Host "========== Environment Variables =========="
-
-    if ($env:QA_USERNAME) {
-      Write-Host "QA_USERNAME = $env:QA_USERNAME"
-    } else {
-      Write-Host "QA_USERNAME is NOT available"
-    }
-
-    if ($env:QA_PASSWORD) {
-      Write-Host "QA_PASSWORD exists"
-    } else {
-      Write-Host "QA_PASSWORD is NOT available"
-    }
-
-    Write-Host "TEST_ENV = $env:TEST_ENV"
-  displayName: 'Verify Environment Variables'
 
 - script: |
     npm test
