@@ -67,6 +67,24 @@ steps:
 # Execute Playwright Tests
 # ==========================================
 
+- powershell: |
+    Write-Host "========== Environment Variables =========="
+
+    if ($env:QA_USERNAME) {
+      Write-Host "QA_USERNAME = $env:QA_USERNAME"
+    } else {
+      Write-Host "QA_USERNAME is NOT available"
+    }
+
+    if ($env:QA_PASSWORD) {
+      Write-Host "QA_PASSWORD exists"
+    } else {
+      Write-Host "QA_PASSWORD is NOT available"
+    }
+
+    Write-Host "TEST_ENV = $env:TEST_ENV"
+  displayName: 'Verify Environment Variables'
+
 - script: |
     npm test
   displayName: 'Execute Playwright Tests'
