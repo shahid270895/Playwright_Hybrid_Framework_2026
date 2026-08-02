@@ -30,8 +30,8 @@ test("User should login successfully with valid credentials", async ({ pages }) 
 
     // Verification
     await pages.homePage.verifyHomePagePageURL(/account/);
-    console.log(await pages.homePage.getMyAccountText());
-    //await pages.homePage.verifyAccountText("My Account");
+    //console.log(await pages.homePage.getMyAccountText());
+    await pages.homePage.verifyAccountText("My Account");
 });
 
 test("User should logout successfully", async ({ pages }) => {
@@ -50,7 +50,7 @@ test("User should logout successfully", async ({ pages }) => {
 
     // Verification
     await pages.homePage.verifyHomePagePageURL(/account/);
-    //await pages.homePage.verifyAccountText("My Account");
+    await pages.homePage.verifyAccountText("My Account");
 
     //perform logout
     await pages.homePage.Logout();
