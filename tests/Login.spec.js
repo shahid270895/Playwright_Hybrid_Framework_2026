@@ -17,19 +17,25 @@ test("User should login successfully with valid credentials", async ({ pages }) 
     await allure.tag("Regression");
 
     //Reading json data
-    const user = JsonHelper.getData("users", "validUser");
-    console.log(user.username);
-    console.log(user.password);
+    // const user = JsonHelper.getData("users", "validUser");
+    // console.log(user.username);
+    // console.log(user.password);
 
     //Reading random data
-    const email = RandomDataHelper.getEmail();
-    console.log(email);
+    // const email = RandomDataHelper.getEmail();
+    // console.log(email);
 
     // Perform login
     await pages.loginPage.login(config.username, config.password);
 
+    //Temp code:
+    console.log("URL:", pages.homePage.page.url());
+
+    console.log("Title:", await pages.homePage.page.title());
+
     // Verification
     await pages.homePage.verifyHomePagePageURL(/account/);
+    console.log(await pages.homePage.getMyAccountText());
     await pages.homePage.verifyAccountText("My Account");
 });
 
