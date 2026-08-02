@@ -25,8 +25,15 @@ const config = JSON.parse(
 // Dynamically read credentials
 const envPrefix = currentEnvironment.toUpperCase();
 
-config.username = process.env[`${envPrefix}_USERNAME`];
-config.password = process.env[`${envPrefix}_PASSWORD`];
+config.username =
+    process.env[`${envPrefix}_USERNAME`] ||
+    process.env.QA_USERNAME ||
+    process.env.USERNAME;
+
+config.password =
+    process.env[`${envPrefix}_PASSWORD`] ||
+    process.env.QA_PASSWORD ||
+    process.env.PASSWORD;
 
 // Validate required configuration
 const requiredKeys = [
