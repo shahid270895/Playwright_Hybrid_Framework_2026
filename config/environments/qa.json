@@ -2,7 +2,7 @@
   "environment": "QA",
   "baseURL": "https://automationteststore.com/index.php?rt=account/login",
   "timeout": 30000,
-  "headless": false,
+  "headless": true,
   "retries": 1,
-  "workers": 2
+  "workers": 1
 }

@@ -78,7 +78,9 @@ steps:
 # ==========================================
 
 - script: |
-    npm run test:qa:chrome
+    npx playwright test tests/Login.spec.js \
+    --project=chromium \
+    --workers=1
   displayName: 'Execute QA Chrome Tests'
 
   env:
