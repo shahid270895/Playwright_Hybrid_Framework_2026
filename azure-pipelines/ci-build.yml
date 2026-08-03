@@ -1,0 +1,126 @@
+# ==========================================
+# Playwright CI Build Pipeline
+# Author  : Shahid Aftab
+# Purpose : Basic Continuous Integration Pipeline
+# ==========================================
+
+trigger:
+- main
+
+pr:
+- main
+
+pool:
+  name: 'AutomationPool-20-07-26'
+
+variables:
+  NodeVersion: '24'
+
+steps:
+
+# ==========================================
+# Checkout Source Code
+# ==========================================
+
+- checkout: self
+  clean: true
+
+# ==========================================
+# Install Node.js
+# ==========================================
+
+- task: UseNode@1
+  displayName: 'Install Node.js'
+
+  inputs:
+    version: $(NodeVersion)
+
+# ==========================================
+# Verify Node & NPM Version
+# ==========================================
+
+- script: |
+    node --version
+    npm --version
+    npx playwright --version
+  displayName: 'Verify Installed Versions'
+
+# ==========================================
+# Install Dependencies
+# ==========================================
+
+- script: |
+    npm ci
+  displayName: 'Install NPM Packages'
+
+# ==========================================
+# Install Playwright Browser
+# ==========================================
+
+- script: |
+    npx playwright install chromium
+  displayName: 'Install Chromium Browser'
+
+# ==========================================
+# Execute Playwright Tests
+# ==========================================
+
+- script: |
+    npm run test:qa:chrome
+  displayName: 'Execute QA Chrome Tests'
+
+  env:
+    USERNAME: $(USERNAME)
+    PASSWORD: $(PASSWORD)
+
+# ==========================================
+# Generate Allure Report
+# ==========================================
+
+- script: |
+    npm run allure:generate
+  displayName: 'Generate Allure Report'
+
+  condition: always()
+
+# ==========================================
+# Publish JUnit Test Results
+# ==========================================
+
+- task: PublishTestResults@2
+  displayName: 'Publish JUnit Test Results'
+
+  condition: always()
+
+  inputs:
+    testResultsFormat: 'JUnit'
+    testResultsFiles: 'artifacts/junit/*.xml'
+    mergeTestResults: true
+    failTaskOnFailedTests: true
+    testRunTitle: 'Playwright CI Build'
+
+# ==========================================
+# Publish HTML & Allure Reports
+# ==========================================
+
+- task: PublishPipelineArtifact@1
+  displayName: 'Publish Reports'
+
+  condition: always()
+
+  inputs:
+    targetPath: '$(Build.SourcesDirectory)/reports'
+    artifact: 'Reports'
+
+# ==========================================
+# Publish Framework Artifacts
+# ==========================================
+
+- task: PublishPipelineArtifact@1
+  displayName: 'Publish Framework Artifacts'
+
+  condition: always()
+
+  inputs:
+    targetPath: '$(Build.SourcesDirectory)/artifacts'
+    artifact: 'Framework-Artifacts'
