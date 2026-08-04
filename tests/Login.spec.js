@@ -5,7 +5,7 @@ const JsonHelper = require("../utils/testData/JsonHelper");
 const RandomDataHelper = require("../utils/testData/RandomDataHelper");
 
     
-test("User should login successfully with valid credentials", async ({ pages }) => {
+test("User should login successfully with valid credentials @Smoke @Regression @P1", async ({ pages }) => {
 
     // ===== Allure Metadata =====
     await allure.epic("Authentication");
@@ -34,7 +34,7 @@ test("User should login successfully with valid credentials", async ({ pages }) 
     await pages.homePage.verifyAccountText("My Account");
 });
 
-test("User should logout successfully", async ({ pages }) => {
+test("User should logout successfully @Smoke @Sanity @P2", async ({ pages }) => {
 
     // ===== Allure Metadata =====
     await allure.epic("Authentication");
