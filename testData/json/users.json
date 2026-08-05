@@ -1,6 +1,6 @@
 {
     "validUser": {
-        "username": "wronguser",
-        "password": "wrong123"
+        "username": "user001",
+        "password": "user@123"
     }
 }

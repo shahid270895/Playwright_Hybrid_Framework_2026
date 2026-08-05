@@ -1,0 +1,122 @@
+# ==========================================
+# Playwright Smoke Pipeline
+# Author  : Shahid Aftab
+# Purpose : Execute Smoke Test Suite
+# ==========================================
+
+trigger: none
+
+pool:
+  name: 'AutomationPool-20-07-26'
+
+variables:
+  NodeVersion: '24'
+
+steps:
+
+# ==========================================
+# Checkout Source Code
+# ==========================================
+
+- checkout: self
+  clean: true
+
+# ==========================================
+# Install Node.js
+# ==========================================
+
+- task: UseNode@1
+  displayName: 'Install Node.js'
+
+  inputs:
+    version: $(NodeVersion)
+
+# ==========================================
+# Verify Versions
+# ==========================================
+
+- script: |
+    node --version
+    npm --version
+    npx playwright --version
+  displayName: 'Verify Installed Versions'
+
+# ==========================================
+# Install Dependencies
+# ==========================================
+
+- script: |
+    npm ci
+  displayName: 'Install NPM Packages'
+
+# ==========================================
+# Install Chromium
+# ==========================================
+
+- script: |
+    npx playwright install chromium
+  displayName: 'Install Chromium Browser'
+
+# ==========================================
+# Execute Smoke Tests
+# ==========================================
+
+- script: |
+    npm run test:smoke:chrome
+  displayName: 'Execute Smoke Suite'
+
+  env:
+    USERNAME: $(USERNAME)
+    PASSWORD: $(PASSWORD)
+
+# ==========================================
+# Generate Allure Report
+# ==========================================
+
+- script: |
+    npm run allure:generate
+  displayName: 'Generate Allure Report'
+
+  condition: always()
+
+# ==========================================
+# Publish JUnit Results
+# ==========================================
+
+- task: PublishTestResults@2
+  displayName: 'Publish JUnit Results'
+
+  condition: always()
+
+  inputs:
+    testResultsFormat: 'JUnit'
+    testResultsFiles: 'artifacts/junit/*.xml'
+    mergeTestResults: true
+    failTaskOnFailedTests: true
+    testRunTitle: 'Smoke Test Execution'
+
+# ==========================================
+# Publish Reports
+# ==========================================
+
+- task: PublishPipelineArtifact@1
+  displayName: 'Publish Reports'
+
+  condition: always()
+
+  inputs:
+    targetPath: '$(Build.SourcesDirectory)/reports'
+    artifact: 'Smoke-Reports'
+
+# ==========================================
+# Publish Framework Artifacts
+# ==========================================
+
+- task: PublishPipelineArtifact@1
+  displayName: 'Publish Framework Artifacts'
+
+  condition: always()
+
+  inputs:
+    targetPath: '$(Build.SourcesDirectory)/artifacts'
+    artifact: 'Smoke-Artifacts'
