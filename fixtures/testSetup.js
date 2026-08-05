@@ -8,11 +8,17 @@ const path = require("path");
 const test = base.test;
 const expect = base.expect;
 
-test.beforeEach(async ({ page }) => {
+test.beforeEach(async ({ page }, testInfo) => {
+
+    Logger.info(`Test Started : ${testInfo.title}`);
 
     AllureHelper.createEnvironmentFile();
+
+    Logger.info(`Opening Application URL`);
     
     await page.goto(config.baseURL);
+
+    Logger.pass(`Successfully Application URL Opened`);
 
 });
 
