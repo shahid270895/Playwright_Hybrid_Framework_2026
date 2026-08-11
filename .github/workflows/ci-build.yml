@@ -1,0 +1,100 @@
+name: Playwright CI Build
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+jobs:
+
+  playwright-ci-build:
+
+    runs-on: windows-latest
+
+    env:
+      USERNAME: ${{ secrets.USERNAME }}
+      PASSWORD: ${{ secrets.PASSWORD }}
+
+    steps:
+
+    # ==========================================
+    # Checkout Source Code
+    # ==========================================
+
+    - name: Checkout Source Code
+      uses: actions/checkout@v4
+
+    # ==========================================
+    # Setup Node.js
+    # ==========================================
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '24'
+        cache: npm
+
+    # ==========================================
+    # Verify Versions
+    # ==========================================
+
+    - name: Verify Installed Versions
+      run: |
+        node --version
+        npm --version
+        npx playwright --version
+
+    # ==========================================
+    # Install Dependencies
+    # ==========================================
+
+    - name: Install NPM Packages
+      run: npm ci
+
+    # ==========================================
+    # Install Chromium Browser
+    # ==========================================
+
+    - name: Install Chromium Browser
+      run: npx playwright install chromium
+
+    # ==========================================
+    # Execute Playwright Tests
+    # ==========================================
+
+    - name: Execute QA Chrome Tests
+      run: npm run test:qa:chrome
+
+    # ==========================================
+    # Generate Allure Report
+    # ==========================================
+
+    - name: Generate Allure Report
+      if: always()
+      run: npm run allure:generate
+
+    # ==========================================
+    # Upload HTML & Allure Reports
+    # ==========================================
+
+    - name: Upload Reports
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: Reports
+        path: reports/
+
+    # ==========================================
+    # Upload Framework Artifacts
+    # ==========================================
+
+    - name: Upload Framework Artifacts
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: Framework-Artifacts
+        path: artifacts/
