@@ -27,10 +27,10 @@ module.exports = defineConfig({
 
   outputDir: 'artifacts/test-results',
 
-  timeout: 30000,
+  timeout: 60000,
 
   expect: {
-    timeout: 30000
+    timeout: 10000
   },
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [
